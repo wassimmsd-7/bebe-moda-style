@@ -56,10 +56,12 @@
   </main>
   <button class="owner-fab" data-view="backoffice" title="Accès démonstration propriétaire">▦ <span>Espace propriétaire</span></button>
   <div id="authModal" class="auth-modal hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle"><form id="authForm" class="auth-card"><button type="button" id="closeAuth" class="close-auth">×</button><p class="eyebrow">ACCÈS SÉCURISÉ</p><h2 id="authTitle">Connexion équipe</h2><p>Réservé au propriétaire et aux employés autorisés.</p><input id="authEmail" type="email" required placeholder="Adresse e-mail" /><input id="authPassword" type="password" required placeholder="Mot de passe" /><button class="primary wide">Se connecter</button><small id="authMessage"></small></form></div>
+  <div id="productModal" class="auth-modal hidden" role="dialog" aria-modal="true" aria-labelledby="productTitle"><form id="productForm" class="auth-card product-form"><button type="button" id="closeProduct" class="close-auth">×</button><p class="eyebrow">CATALOGUE</p><h2 id="productTitle">Ajouter un produit</h2><input id="productSku" required placeholder="SKU, ex. BMS-009" /><input id="productName" required placeholder="Nom du produit (français)" /><select id="productAge"><option value="0-6">0–6 mois</option><option value="6-18">6–18 mois</option><option value="18-36">18–36 mois</option><option value="36+">36 mois et plus</option></select><div class="form-split"><input id="productCost" type="number" min="0" required placeholder="Prix achat (DZD)" /><input id="productPrice" type="number" min="0" required placeholder="Prix vente (DZD)" /></div><div class="form-split"><input id="productStock" type="number" min="0" required placeholder="Stock initial" /><input id="productReorder" type="number" min="0" value="5" required placeholder="Seuil alerte" /></div><label class="check-line"><input id="productPublished" type="checkbox" checked /> Afficher ce produit dans la boutique</label><button class="primary wide">Enregistrer le produit</button><small id="productMessage"></small></form></div>
   <div id="toast" class="toast"></div>
   <script src="supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
   <script src="production.js"></script>
+  <script src="inventory-admin.js"></script>
 </body>
 </html>
