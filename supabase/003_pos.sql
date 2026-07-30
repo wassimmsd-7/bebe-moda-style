@@ -9,6 +9,7 @@ create table if not exists public.cash_sessions (
   notes text
 );
 alter table public.cash_sessions enable row level security;
+drop policy if exists "staff cash sessions" on public.cash_sessions;
 create policy "staff cash sessions" on public.cash_sessions for all using(public.is_staff()) with check(public.is_staff());
 
 create or replace function public.record_pos_sale(p_items jsonb,p_method public.payment_method,p_received numeric,p_customer_name text default null,p_customer_phone text default null) returns jsonb language plpgsql security definer set search_path=public as $$
@@ -31,10 +32,9 @@ begin
    insert into public.inventory_movements(product_id,quantity_delta,reason,reference_type,reference_id,created_by) values(v_product.id,-v_qty,'Vente caisse','pos',v_order,auth.uid());
    v_total:=v_total+(v_product.sale_price*v_qty);
  end loop;
- if p_received>v_total then raise exception 'Montant reçu supérieur au total'; end if;
  if p_received>=v_total then v_status:='paid'; elsif p_received>0 then v_status:='partial'; end if;
  update public.orders set subtotal=v_total,total=v_total,payment_status=v_status where id=v_order;
- if p_received>0 then insert into public.payments(order_id,method,amount,status,recorded_by) values(v_order,p_method,p_received,case when p_received>=v_total then 'paid'::public.payment_status else 'partial'::public.payment_status end,auth.uid()); end if;
- return (select jsonb_build_object('order_number',order_number,'total',total,'received',p_received,'remaining',total-p_received,'payment_status',payment_status) from public.orders where id=v_order);
+ if p_received>0 then insert into public.payments(order_id,method,amount,status,recorded_by) values(v_order,p_method,least(p_received,v_total),case when p_received>=v_total then 'paid'::public.payment_status else 'partial'::public.payment_status end,auth.uid()); end if;
+ return (select jsonb_build_object('order_number',order_number,'total',total,'received',p_received,'change',greatest(p_received-total,0),'remaining',greatest(total-p_received,0),'payment_status',payment_status) from public.orders where id=v_order);
 end; $$;
 grant execute on function public.record_pos_sale(jsonb,public.payment_method,numeric,text,text) to authenticated;

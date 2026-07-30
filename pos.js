@@ -97,7 +97,8 @@
     posCart=[]; q('#posCustomerName').value=''; q('#posCustomerPhone').value=''; q('#posReceived').removeAttribute('data-touched'); q('#posReceived').value='';
     renderPosCart(); await loadPosProducts();
     const r=q('#posReceipt'); r.classList.add('show');
-    r.innerHTML=`<b>Ticket ${esc(data.order_number)}</b><br>Total : ${money(data.total)}<br>Reçu : ${money(data.received)}<br>Rendu / restant : ${money(Math.abs(data.remaining))} ${Number(data.remaining)>0?'(à recevoir)':''}<br>Statut : ${esc(data.payment_status)}`;
+    const changeLine=Number(data.change)>0?`Monnaie rendue : ${money(data.change)}`:(Number(data.remaining)>0?`Reste à recevoir : ${money(data.remaining)}`:'Montant exact');
+    r.innerHTML=`<b>Ticket ${esc(data.order_number)}</b><br>Total : ${money(data.total)}<br>Reçu : ${money(data.received)}<br>${changeLine}<br>Statut : ${esc(data.payment_status)}`;
     toast('Vente enregistrée en caisse.');
   }
 
