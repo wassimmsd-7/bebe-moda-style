@@ -1,6 +1,14 @@
 /* Connexion production optionnelle : le mode démo reste disponible sans Supabase. */
 (function(){
   const config=window.BMS_CONFIG||{}; const publicKey=config.supabasePublishableKey||config.supabaseAnonKey;
+  const authModal=document.querySelector('#authModal'), authForm=document.querySelector('#authForm'), authMessage=document.querySelector('#authMessage');
+  const ownerButton=document.querySelector('.owner-fab'), secureOwnerButton=ownerButton.cloneNode(true); ownerButton.replaceWith(secureOwnerButton);
+  const staffRoles=['owner','super_admin','cashier','preparer','courier'];
+  function openAuth(){if(!window.bmsDb)return toast('Configurez Supabase avant d’ouvrir l’espace équipe.');authModal.classList.remove('hidden');document.querySelector('#authEmail').focus()}
+  function closeAuth(){authModal.classList.add('hidden');authMessage.textContent=''}
+  async function openBackofficeIfAllowed(){const {data:{user}}=await window.bmsDb.auth.getUser();if(!user)return openAuth();const {data:profile}=await window.bmsDb.from('profiles').select('role').eq('id',user.id).single();if(!profile||!staffRoles.includes(profile.role)){await window.bmsDb.auth.signOut();return toast('Ce compte n’a pas accès à l’espace équipe.')}showView('backoffice')}
+  secureOwnerButton.addEventListener('click',openBackofficeIfAllowed);document.querySelector('#closeAuth').addEventListener('click',closeAuth);authModal.addEventListener('click',e=>{if(e.target===authModal)closeAuth()});
+  authForm.addEventListener('submit',async e=>{e.preventDefault();authMessage.textContent='Connexion en cours…';const {data,error}=await window.bmsDb.auth.signInWithPassword({email:authEmail.value,password:authPassword.value});if(error){authMessage.textContent='Connexion refusée : '+error.message;return}const {data:profile}=await window.bmsDb.from('profiles').select('role').eq('id',data.user.id).single();if(!profile||!staffRoles.includes(profile.role)){await window.bmsDb.auth.signOut();authMessage.textContent='Ce compte n’est pas autorisé. Contactez le propriétaire.';return}closeAuth();showView('backoffice');toast('Connexion équipe réussie.');});
   const btn=document.querySelector('#checkoutBtn');
   const fresh=btn.cloneNode(true); btn.replaceWith(fresh);
   fresh.addEventListener('click',()=>{if(!cart.length)return toast('Votre panier est vide.');document.querySelector('#checkoutForm').classList.remove('hidden');document.querySelector('#buyerName').focus()});
