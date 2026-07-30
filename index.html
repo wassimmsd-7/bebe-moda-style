@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f36b9b" />
+  <title>Bébé Moda Style | Tout doux, tout près</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="production.css" />
+</head>
+<body>
+  <div class="announcement">Livraison disponible partout en Algérie · Paiement à la livraison</div>
+  <header class="site-header">
+    <button class="logo" data-view="shop" aria-label="Accueil"><img src="assets/logo.png" alt="Bébé moda style" /><span>Bébé Moda Style</span></button>
+    <nav class="nav" aria-label="Navigation principale">
+      <button class="nav-link active" data-view="shop">Boutique</button>
+      <button class="nav-link" data-view="advice">Conseils parents</button>
+      <button class="nav-link" data-view="tracking">Suivre ma commande</button>
+    </nav>
+    <div class="header-actions"><button id="themeToggle" class="icon-btn" title="Mode sombre">◐</button><button id="languageToggle" class="lang-btn">FR</button><button class="cart-btn" data-view="cart">Panier <b id="cartCount">0</b></button></div>
+  </header>
+
+  <main>
+    <section id="shop" class="view active">
+      <section class="hero">
+        <div class="hero-copy"><p class="eyebrow">LA DOUCEUR AU QUOTIDIEN</p><h1>Chaque petit moment mérite le <em>meilleur.</em></h1><p>Vêtements, éveil et essentiels soigneusement choisis pour les bébés de 0 à 36 mois et plus.</p><div class="hero-actions"><button class="primary" data-scroll="products">Découvrir la collection</button><button class="secondary" data-view="advice">Conseils d'experts →</button></div><div class="trust"><span>✓ Paiement à la livraison</span><span>✓ Échange facile</span><span>✓ Livraison Algérie & monde</span></div></div>
+        <div class="hero-art"><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="baby-card"><span>✦</span><div class="onesie">♡</div><p>Confort & tendresse</p></div></div>
+      </section>
+      <section class="category-strip"><button class="category active" data-category="all"><span>✨</span>Tous les essentiels</button><button class="category" data-category="0-6"><span>🍼</span>0–6 mois</button><button class="category" data-category="6-18"><span>🧸</span>6–18 mois</button><button class="category" data-category="18-36"><span>🌱</span>18–36 mois</button><button class="category" data-category="season"><span>☀️</span>Collection été</button></section>
+      <section class="products-section" id="products"><div class="section-heading"><div><p class="eyebrow">NOS COUPS DE CŒUR</p><h2>Tout pour grandir avec style</h2></div><div class="search"><span>⌕</span><input id="searchInput" placeholder="Rechercher un produit..." /></div></div><div id="productGrid" class="product-grid"></div></section>
+      <section class="promise"><div><span class="promise-icon">♡</span><h3>Des produits pensés pour la vraie vie</h3><p>Des matières confortables, des pièces faciles à vivre et des parents bien accompagnés.</p></div><div class="promise-stats"><p><b>+1 200</b><span>familles heureuses</span></p><p><b>4,9/5</b><span>avis clients</span></p><p><b>24–48h</b><span>livraison locale</span></p></div></section>
+    </section>
+
+    <section id="advice" class="view page-view"><p class="eyebrow">LE COIN DES PARENTS</p><h1>Grandir sereinement, ensemble.</h1><p class="lead">Des repères simples préparés avec des professionnels pour vous accompagner à chaque étape.</p><div class="advice-grid"><article><div>🛏️</div><p>0–6 mois</p><h3>Préparer un sommeil plus doux</h3><a href="#">Lire le conseil →</a></article><article><div>🥣</div><p>6–18 mois</p><h3>Les essentiels pour la diversification</h3><a href="#">Lire le conseil →</a></article><article><div>🌈</div><p>18–36 mois</p><h3>Encourager l'autonomie avec bienveillance</h3><a href="#">Lire le conseil →</a></article></div></section>
+
+    <section id="tracking" class="view page-view tracking"><p class="eyebrow">SUIVI DE COMMANDE</p><h1>Où est votre petit bonheur ?</h1><p class="lead">Entrez votre numéro de commande et votre téléphone.</p><form id="trackingForm" class="track-form"><input placeholder="Ex. BMS-2026-1042" required /><input placeholder="Votre téléphone" required /><button class="primary">Suivre ma commande</button></form><div id="trackingResult" class="tracking-result hidden"><b>Commande BMS-2026-1042</b><span class="status preparing">En préparation</span><p>Votre commande est soigneusement préparée. Nous vous contacterons avant l'expédition.</p></div></section>
+
+    <section id="cart" class="view page-view"><div class="cart-layout"><div><p class="eyebrow">VOTRE SÉLECTION</p><h1>Mon panier</h1><div id="cartItems" class="cart-items"></div></div><aside class="cart-summary"><h3>Récapitulatif</h3><p>Sous-total <b id="subtotal">0 DZD</b></p><p>Livraison <b>Selon wilaya</b></p><hr><h3>Total <b id="total">0 DZD</b></h3><button id="checkoutBtn" class="primary wide">Commander par paiement à la livraison</button><small>Vous serez contacté pour confirmer votre commande.</small><form id="checkoutForm" class="checkout-form hidden"><input id="buyerName" required placeholder="Nom et prénom" /><input id="buyerPhone" required placeholder="Téléphone (WhatsApp si possible)" /><input id="buyerWilaya" required placeholder="Wilaya" /><textarea id="buyerAddress" required placeholder="Adresse complète de livraison"></textarea><textarea id="buyerNote" placeholder="Note pour la commande (facultatif)"></textarea><button class="primary wide">Confirmer ma commande COD</button></form></aside></div></section>
+
+    <section id="backoffice" class="view app-view"><aside class="app-sidebar"><div class="app-brand">BMS <span>Manager</span></div><button class="admin-tab active" data-panel="dashboard">▦ Tableau de bord</button><button class="admin-tab" data-panel="inventory">◫ Produits & stock</button><button class="admin-tab" data-panel="orders">▱ Commandes</button><button class="admin-tab" data-panel="customers">♙ Clients</button><button class="admin-tab" data-panel="suppliers">♧ Fournisseurs</button><button class="admin-tab" data-panel="finance">◌ Finance</button><button class="admin-tab" data-panel="promos">✦ Offres & saisons</button><button class="admin-tab" data-panel="settings">⚙ Super admin</button><button class="back-shop" data-view="shop">← Voir la boutique</button></aside>
+      <div class="app-content"><div class="app-top"><div><p id="appBreadcrumb">VUE D'ENSEMBLE</p><h1 id="appTitle">Bonjour, Amina 👋</h1></div><button class="profile">AM</button></div>
+        <div id="dashboard" class="admin-panel active"><div class="metric-grid"><article><span>Chiffre d'affaires</span><b>1 284 500 DZD</b><small>↑ 12,4% ce mois</small></article><article><span>Bénéfice net estimé</span><b>328 700 DZD</b><small>↑ 8,1% ce mois</small></article><article><span>Commandes à confirmer</span><b>18</b><small>7 en ligne · 11 caisse</small></article><article><span>Alertes de stock</span><b>9</b><small class="warning">À commander aujourd'hui</small></article></div><div class="admin-columns"><section class="panel-card"><div class="panel-header"><h3>Ventes des 7 derniers jours</h3><span>Juil. 2026</span></div><div class="chart"><i style="height:42%"></i><i style="height:65%"></i><i style="height:48%"></i><i style="height:82%"></i><i style="height:62%"></i><i style="height:93%"></i><i style="height:75%"></i></div><div class="chart-days"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div></section><section class="panel-card"><div class="panel-header"><h3>À traiter maintenant</h3><button class="text-btn" data-panel-target="orders">Voir tout</button></div><ul class="task-list"><li><b>7</b><span>Commandes COD à confirmer</span></li><li><b>9</b><span>Produits sous le seuil de stock</span></li><li><b>3</b><span>Livraisons prêtes à transmettre</span></li></ul></section></div></div>
+        <div id="inventory" class="admin-panel"><div class="panel-header"><div><h2>Produits & stock</h2><p>Le stock se synchronise avec la boutique et la caisse.</p></div><button class="primary" id="addProduct">+ Ajouter un produit</button></div><div id="stockAlert" class="stock-alert"></div><div class="table-wrap"><table><thead><tr><th>Produit</th><th>SKU</th><th>Prix achat</th><th>Prix vente</th><th>Stock</th><th>État</th></tr></thead><tbody id="inventoryRows"></tbody></table></div></div>
+        <div id="orders" class="admin-panel"><div class="panel-header"><div><h2>Commandes</h2><p>Confirmez, préparez et transmettez au livreur.</p></div><select><option>Tous les statuts</option><option>À confirmer</option><option>En livraison</option></select></div><div class="orders-list" id="ordersList"></div></div>
+        <div id="customers" class="admin-panel"><h2>Clients</h2><p class="muted">Historique, coordonnées et consentement contact centralisés.</p><div class="contact-grid"><article><b>Fatima B.</b><span>Oran · 4 commandes · 48 200 DZD</span><button class="secondary">Contacter</button></article><article><b>Sofiane K.</b><span>Alger · 2 commandes · 21 900 DZD</span><button class="secondary">Contacter</button></article><article><b>Nadia L.</b><span>Blida · 5 commandes · 63 100 DZD</span><button class="secondary">Contacter</button></article></div></div>
+        <div id="suppliers" class="admin-panel"><h2>Fournisseurs & réapprovisionnement</h2><div class="admin-columns"><section class="panel-card"><h3>Bon de commande suggéré</h3><div id="purchaseOrder"></div><button class="primary wide">Enregistrer le bon de commande</button></section><section class="panel-card"><h3>Fournisseurs actifs</h3><ul class="supplier-list"><li><b>BabySoft Algérie</b><span>Textile · Alger · +213 555 123 456</span></li><li><b>Petit Monde</b><span>Éveil · Oran · +213 770 111 980</span></li><li><b>Maison Cocon</b><span>Puériculture · Constantine · +213 560 889 021</span></li></ul></section></div></div>
+        <div id="finance" class="admin-panel"><h2>Finance & rentabilité</h2><div class="metric-grid"><article><span>Ventes caisse</span><b>702 400 DZD</b><small>54,7% des ventes</small></article><article><span>Ventes en ligne</span><b>582 100 DZD</b><small>45,3% des ventes</small></article><article><span>Charges estimées</span><b>142 800 DZD</b><small>Personnel, transport, frais</small></article></div><section class="panel-card"><h3>Contrôle de caisse</h3><p>Clôture du jour : <b>84 500 DZD</b> · Espèces : 62 000 DZD · Carte / virement : 22 500 DZD</p><button class="primary">Imprimer le reçu journalier</button></section></div>
+        <div id="promos" class="admin-panel"><h2>Offres & collections saisonnières</h2><div class="promo-card"><span>☀️ Collection été</span><h3>-15% sur les looks légers jusqu'au 15 août</h3><p>Visible sur la boutique, avec bannière automatique et date de fin.</p><button class="primary">Gérer l'offre</button></div></div>
+        <div id="settings" class="admin-panel"><h2>Super admin</h2><div class="settings-grid"><article><h3>Utilisateurs & rôles</h3><p>Propriétaire, vendeur caisse, préparateur, livreur et administrateur technique.</p><button class="secondary">Gérer les accès</button></article><article><h3>Synchronisation</h3><p><span class="live-dot"></span> Boutique, stock et caisse synchronisés</p><button class="secondary">Historique des mises à jour</button></article><article><h3>Langues et apparence</h3><p>Français, العربية, English, Darija · clair / sombre.</p><button class="secondary">Configurer</button></article></div></div>
+      </div>
+    </section>
+  </main>
+  <button class="owner-fab" data-view="backoffice" title="Accès démonstration propriétaire">▦ <span>Espace propriétaire</span></button>
+  <div id="toast" class="toast"></div>
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+  <script src="production.js"></script>
+</body>
+</html>
