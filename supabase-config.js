@@ -4,6 +4,6 @@
  Laissez vide pour conserver le mode démonstration local.
 */
 window.BMS_CONFIG = {
-  supabaseUrl: 'https://tukhqffgaxjbxwlrllwu.supabase.co/rest/v1/',
+  supabaseUrl: 'https://tukhqffgaxjbxwlrllwu.supabase.co',
   supabasePublishableKey: 'sb_publishable_3jhF6ov0riiRoRYnYo_4bQ__E0GKJ8x'
 };
