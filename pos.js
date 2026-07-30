@@ -85,12 +85,15 @@
     q('#posChange').innerHTML=change>=0?`Monnaie à rendre : <b>${money(change)}</b>`:`Il manque <b>${money(-change)}</b> pour couvrir le total`;
   }
 
+  let lastReceipt=null;
+
   async function encaisser(){
     if(!window.bmsDb)return toast('Connectez Supabase pour encaisser.');
     if(!sessionId)return toast('Ouvrez la caisse avant d’encaisser une vente.');
     if(!posCart.length)return toast('Le panier caisse est vide.');
     const method=q('#posMethod').value; const received=Number(q('#posReceived').value||0);
     const name=q('#posCustomerName').value.trim(); const phone=q('#posCustomerPhone').value.trim();
+    const lines=posCart.map(x=>({name:posProducts.find(p=>p.id===x.id)?.name_fr||'',qty:x.qty,price:Number(posProducts.find(p=>p.id===x.id)?.sale_price||0)}));
     const items=posCart.map(x=>({product_id:x.id,quantity:x.qty}));
     const {data,error}=await window.bmsDb.rpc('record_pos_sale',{p_items:items,p_method:method,p_received:received,p_customer_name:name||null,p_customer_phone:phone||null});
     if(error)return toast('Vente refusée : '+error.message);
@@ -98,9 +101,92 @@
     renderPosCart(); await loadPosProducts();
     const r=q('#posReceipt'); r.classList.add('show');
     const changeLine=Number(data.change)>0?`Monnaie rendue : ${money(data.change)}`:(Number(data.remaining)>0?`Reste à recevoir : ${money(data.remaining)}`:'Montant exact');
-    r.innerHTML=`<b>Ticket ${esc(data.order_number)}</b><br>Total : ${money(data.total)}<br>Reçu : ${money(data.received)}<br>${changeLine}<br>Statut : ${esc(data.payment_status)}`;
+    lastReceipt={orderNumber:data.order_number,total:data.total,received:data.received,change:data.change,remaining:data.remaining,status:data.payment_status,method,customer:name,phone,lines,date:new Date()};
+    r.innerHTML=`<b>Ticket ${esc(data.order_number)}</b><br>Total : ${money(data.total)}<br>Reçu : ${money(data.received)}<br>${changeLine}<br>Statut : ${esc(data.payment_status)}<br><button id="posPrint" class="secondary wide">🖨 Imprimer le ticket</button>`;
+    q('#posPrint').addEventListener('click',()=>printReceipt(lastReceipt));
     toast('Vente enregistrée en caisse.');
   }
+
+  function printReceipt(r){
+    if(!r)return;
+    const methodLabel={cash:'Espèces',card:'Carte',transfer:'Virement',credit:'Crédit client'}[r.method]||r.method;
+    const rows=r.lines.map(l=>`<tr><td>${esc(l.name)}</td><td style="text-align:center">${l.qty}</td><td style="text-align:right">${money(l.price*l.qty)}</td></tr>`).join('');
+    const win=window.open('','_blank','width=380,height=600');
+    if(!win)return toast('Autorisez les pop-ups pour imprimer le ticket.');
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Ticket ${esc(r.orderNumber)}</title>
+      <style>body{font-family:'Courier New',monospace;font-size:13px;padding:16px;color:#111}h1{font-size:16px;text-align:center;margin:0}
+      p.center{text-align:center;margin:2px 0 12px;font-size:11px}table{width:100%;border-collapse:collapse;margin:10px 0}
+      td{padding:3px 0;border-bottom:1px dashed #999}.totals td{border:0;font-weight:bold}hr{border:none;border-top:1px dashed #999}
+      .center{text-align:center}</style></head><body>
+      <h1>Bébé Moda Style</h1><p class="center">Ticket de caisse</p>
+      <p>Ticket : <b>${esc(r.orderNumber)}</b><br>Date : ${r.date.toLocaleString('fr-DZ')}${r.customer?`<br>Client : ${esc(r.customer)}`:''}${r.phone?`<br>Tél : ${esc(r.phone)}`:''}</p>
+      <hr><table>${rows}</table><hr>
+      <table class="totals"><tr><td>Total</td><td style="text-align:right">${money(r.total)}</td></tr>
+      <tr><td>Payé (${esc(methodLabel)})</td><td style="text-align:right">${money(r.received)}</td></tr>
+      ${Number(r.change)>0?`<tr><td>Monnaie rendue</td><td style="text-align:right">${money(r.change)}</td></tr>`:''}
+      ${Number(r.remaining)>0?`<tr><td>Reste à payer</td><td style="text-align:right">${money(r.remaining)}</td></tr>`:''}</table>
+      <p class="center">Merci de votre confiance 💗</p>
+      <script>window.onload=()=>{window.print()}</script></body></html>`);
+    win.document.close();
+  }
+
+  /* ---- Historique & retours ---- */
+  let posHistData=[];
+  const statusLabel={paid:'Payée',partial:'Partielle',unpaid:'Impayée',refunded:'Remboursée'};
+
+  async function loadPosHistory(){
+    if(!window.bmsDb)return;
+    const holder=q('#posHistList'); if(holder)holder.innerHTML='<p class="pos-empty">Chargement…</p>';
+    const {data,error}=await window.bmsDb.from('orders').select('*,order_items(*),pos_returns(*,pos_return_items(*)),customers(full_name,phone)').eq('source','pos').order('created_at',{ascending:false}).limit(80);
+    if(error){if(holder)holder.innerHTML='<p class="pos-empty">Historique indisponible : '+esc(error.message)+'</p>';return}
+    posHistData=data||[]; renderPosHistory();
+  }
+
+  function renderPosHistory(){
+    const holder=q('#posHistList'); if(!holder)return;
+    const term=(q('#posHistSearch')?.value||'').toLowerCase();
+    const list=posHistData.filter(o=>!term||o.order_number.toLowerCase().includes(term)||(o.customers?.phone||'').includes(term)||(o.customers?.full_name||'').toLowerCase().includes(term));
+    holder.innerHTML=list.length?list.map(o=>{
+      const date=new Date(o.created_at).toLocaleString('fr-DZ');
+      const who=o.customers?.full_name?`${esc(o.customers.full_name)}${o.customers.phone?' · '+esc(o.customers.phone):''}`:'Client de passage';
+      return `<div class="pos-hist-card"><div><b>${esc(o.order_number)}</b><span class="pos-hist-meta">${date} · ${who}</span></div><b>${money(o.total)}</b><span class="pos-hist-status ${esc(o.payment_status)}">${statusLabel[o.payment_status]||o.payment_status}</span><button class="secondary" data-return="${o.id}">Détails / Retour</button></div>`;
+    }).join(''):'<p class="pos-empty">Aucune vente trouvée.</p>';
+    holder.querySelectorAll('[data-return]').forEach(b=>b.addEventListener('click',()=>openReturnModal(b.dataset.return)));
+  }
+
+  function openReturnModal(orderId){
+    const order=posHistData.find(o=>o.id===orderId); if(!order)return;
+    q('#posReturnOrderNumber').textContent=order.order_number;
+    q('#posReturnModal').dataset.orderId=orderId;
+    const returnedByItem={};
+    (order.pos_returns||[]).forEach(r=>(r.pos_return_items||[]).forEach(ri=>{returnedByItem[ri.order_item_id]=(returnedByItem[ri.order_item_id]||0)+ri.quantity}));
+    const lines=(order.order_items||[]).map(it=>{
+      const already=returnedByItem[it.id]||0; const remain=it.quantity-already;
+      return `<div class="pos-return-line"><div><b>${esc(it.product_name)}</b><br><span>${money(it.unit_price)} · vendu ${it.quantity}${already?` · déjà retourné ${already}`:''}</span></div>${remain>0?`<input type="number" min="0" max="${remain}" value="0" data-order-item="${it.id}" />`:'<span>Rien à retourner</span>'}</div>`;
+    }).join('');
+    q('#posReturnLines').innerHTML=lines||'<p class="pos-empty">Aucun article sur cette vente.</p>';
+    q('#posReturnReason').value=''; q('#posReturnMessage').textContent=''; q('#posReturnRestock').checked=true;
+    q('#posReturnModal').classList.remove('hidden');
+  }
+
+  async function confirmReturn(){
+    const orderId=q('#posReturnModal').dataset.orderId; if(!orderId)return;
+    const items=[...q('#posReturnLines').querySelectorAll('[data-order-item]')].map(i=>({order_item_id:i.dataset.orderItem,quantity:Number(i.value||0)})).filter(i=>i.quantity>0);
+    if(!items.length)return q('#posReturnMessage').textContent='Choisissez au moins un article et une quantité.';
+    const restock=q('#posReturnRestock').checked; const reason=q('#posReturnReason').value.trim();
+    q('#posReturnMessage').textContent='Traitement du retour…';
+    const {data,error}=await window.bmsDb.rpc('record_pos_return',{p_order_id:orderId,p_items:items,p_restock:restock,p_reason:reason||null});
+    if(error){q('#posReturnMessage').textContent='Erreur : '+error.message;return}
+    q('#posReturnModal').classList.add('hidden');
+    toast(`Retour enregistré · remboursement ${money(data.refund_amount)}${data.full_return?' · vente entièrement retournée':''}`);
+    await loadPosHistory(); await loadPosProducts();
+  }
+
+  document.querySelector('.admin-tab[data-panel="posHistory"]')?.addEventListener('click',loadPosHistory);
+  q('#posHistSearch')?.addEventListener('input',renderPosHistory);
+  q('#closePosReturn')?.addEventListener('click',()=>q('#posReturnModal').classList.add('hidden'));
+  q('#posReturnModal')?.addEventListener('click',e=>{if(e.target.id==='posReturnModal')q('#posReturnModal').classList.add('hidden')});
+  q('#posReturnConfirm')?.addEventListener('click',confirmReturn);
 
   document.querySelector('.admin-tab[data-panel="pos"]')?.addEventListener('click',()=>{renderSessionBar();loadPosProducts()});
   q('#posSearch')?.addEventListener('input',renderPosProducts);

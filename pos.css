@@ -28,3 +28,20 @@
 .pos-receipt{margin-top:14px;background:#f8f4ef;border-radius:12px;padding:14px;font-size:14px;display:none}
 .pos-receipt.show{display:block}
 .pos-empty{color:var(--muted,#8a8a93);font-size:14px;padding:14px 0}
+
+/* Historique & retours */
+.pos-hist-list{display:grid;gap:10px;margin-top:16px}
+.pos-hist-card{background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:14px 18px;display:grid;grid-template-columns:1fr auto auto auto;gap:14px;align-items:center}
+@media (max-width:760px){.pos-hist-card{grid-template-columns:1fr;text-align:left}}
+.pos-hist-card b{display:block}
+.pos-hist-card .pos-hist-meta{font-size:12.5px;color:var(--muted,#8a8a93)}
+.pos-hist-status{padding:4px 9px;border-radius:7px;font-size:12px;font-weight:700;justify-self:start}
+.pos-hist-status.paid{background:#e8f8ef;color:#218455}
+.pos-hist-status.partial{background:#fff0dc;color:#ac6818}
+.pos-hist-status.unpaid{background:#ffe7ea;color:#c54b63}
+.pos-hist-status.refunded{background:#eee9ff;color:#5b4bb0}
+.pos-return-card{width:min(520px,100%)}
+.pos-return-lines{display:grid;gap:8px;max-height:280px;overflow-y:auto}
+.pos-return-line{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:8px 10px}
+.pos-return-line input[type=number]{width:64px;padding:6px;border-radius:8px;border:1px solid rgba(0,0,0,.12)}
+.pos-return-line span{font-size:12px;color:var(--muted,#8a8a93)}
