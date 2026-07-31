@@ -19,6 +19,8 @@
     if(window.bmsRefreshCustomers)window.bmsRefreshCustomers();
     if(window.bmsRefreshInventory)window.bmsRefreshInventory();
     if(window.bmsRefreshPos)window.bmsRefreshPos();
+    if(window.bmsRefreshSuppliers)window.bmsRefreshSuppliers();
+    if(window.bmsRefreshFinance)window.bmsRefreshFinance();
 
     // 1) Catalogue public (boutique) : toute variation de stock, prix ou
     //    publication d'un produit publié se reflète immédiatement, sans que
@@ -28,6 +30,7 @@
         refreshCatalog();
         if(window.bmsRefreshInventory)window.bmsRefreshInventory();
         if(window.bmsRefreshPos)window.bmsRefreshPos();
+        if(window.bmsRefreshSuppliers)window.bmsRefreshSuppliers();
       })
       .subscribe();
 
@@ -39,6 +42,7 @@
           toast('Nouvelle commande reçue : '+(payload.new?.order_number||''));
         if(window.bmsRefreshOrders)window.bmsRefreshOrders();
         if(window.bmsRefreshCustomers)window.bmsRefreshCustomers();
+        if(window.bmsRefreshFinance)window.bmsRefreshFinance();
       })
       .subscribe();
   }
