@@ -21,6 +21,7 @@
     if(window.bmsRefreshPos)window.bmsRefreshPos();
     if(window.bmsRefreshSuppliers)window.bmsRefreshSuppliers();
     if(window.bmsRefreshFinance)window.bmsRefreshFinance();
+    if(window.bmsRefreshSettings)window.bmsRefreshSettings();
 
     // 1) Catalogue public (boutique) : toute variation de stock, prix ou
     //    publication d'un produit publié se reflète immédiatement, sans que
@@ -31,6 +32,7 @@
         if(window.bmsRefreshInventory)window.bmsRefreshInventory();
         if(window.bmsRefreshPos)window.bmsRefreshPos();
         if(window.bmsRefreshSuppliers)window.bmsRefreshSuppliers();
+        if(window.bmsRefreshSettings)window.bmsRefreshSettings();
       })
       .subscribe();
 
