@@ -1,1 +1,15 @@
 .product-form{max-height:min(86vh,760px);overflow:auto}.product-form .upload-zone{border:1.5px dashed #f3a3bd;background:#fff6f9;border-radius:12px;padding:13px;display:flex;align-items:center;gap:9px;color:#bd4d7b;font-size:13px;font-weight:700}.upload-zone input{display:none}.image-manager{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.image-thumb{height:67px;position:relative;border-radius:9px;overflow:hidden;background:#f1eff5}.image-thumb img{height:100%;width:100%;object-fit:cover}.image-thumb button{position:absolute;right:3px;top:3px;width:21px;height:21px;border-radius:50%;background:#322b49;color:#fff;font-size:14px}.inventory-image{width:35px;height:35px;border-radius:8px;object-fit:cover;vertical-align:middle;margin-right:8px}.row-actions{display:flex;gap:6px}.row-actions button{padding:6px 8px;border-radius:7px;font-size:12px;font-weight:700}.edit-product{background:#eeeaff;color:#51498b}.delete-product{background:#ffe7ea;color:#bd4962}.product-image img{width:100%;height:100%;object-fit:cover;font-size:0}@media(max-width:580px){.form-split{grid-template-columns:1fr}.image-manager{grid-template-columns:repeat(3,1fr)}}
+.product-image,.product-info h3{cursor:pointer}
+.quickview-card{width:min(560px,100%);display:grid;grid-template-columns:1fr;gap:0;padding:0;overflow:hidden}
+.quickview-media{width:100%}
+.quickview-image{height:260px;display:grid;place-items:center;font-size:90px;position:relative}
+.quickview-image .badge{position:absolute;top:14px;left:14px;background:#fff;color:#df4e83;padding:5px 9px;border-radius:8px;font-size:11px;font-weight:800}
+.quickview-image img{width:100%;height:100%;object-fit:cover}
+.quickview-info{padding:24px;display:grid;gap:6px}
+.quickview-desc{color:var(--muted);font-size:14px;line-height:1.55;margin:4px 0 10px}
+.quickview-price{font-size:24px}
+.quickview-qty{display:flex;align-items:center;justify-content:space-between;margin:14px 0;font-weight:700;font-size:14px}
+.quickview-qty .qty{background:#f4eff4;border-radius:10px;padding:4px 10px;display:flex;align-items:center;gap:12px}
+.quickview-qty .qty button{background:none;font-size:18px;width:24px;height:24px}
+#qvStockMsg{color:#ac6818;min-height:16px;display:block;margin-top:8px}
+@media(max-width:580px){.quickview-image{height:200px;font-size:64px}.quickview-info{padding:18px}}
