@@ -51,7 +51,7 @@
     const {data,error}=await window.bmsDb.from('catalog_products').select('*').order('name_fr');
     if(error)return;
     if(data){
-      products.splice(0,products.length,...data.map(p=>({id:p.id,name:p.name_fr,age:p.age_group||'0-6',category:p.age_group?`${p.age_group} mois`:'Essentiels',price:Number(p.sale_price),cost:0,stock:p.stock_quantity,sku:p.sku,image_url:p.image_url,icon:p.image_url?`<img src="${p.image_url}" alt="${p.name_fr}">`:'🧸',color:'#ffe7ef',badge:p.seasonal?'Saison':'Disponible'})));
+      products.splice(0,products.length,...data.map(p=>({id:p.id,name:p.name_fr,name_ar:p.name_ar,name_en:p.name_en,age:p.age_group||'0-6',category:p.age_group?`${p.age_group} mois`:'Essentiels',price:Number(p.sale_price),cost:0,stock:p.stock_quantity,sku:p.sku,image_url:p.image_url,icon:p.image_url?`<img src="${p.image_url}" alt="${p.name_fr||''}">`:'🧸',color:'#ffe7ef',badge:p.seasonal?'Saison':'Disponible'})));
       renderProducts();
       if(document.querySelector('#cart')?.classList.contains('active'))renderCart();
     }

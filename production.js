@@ -11,20 +11,20 @@
   authForm.addEventListener('submit',async e=>{e.preventDefault();authMessage.textContent='Connexion en cours…';const {data,error}=await window.bmsDb.auth.signInWithPassword({email:authEmail.value,password:authPassword.value});if(error){authMessage.textContent='Connexion refusée : '+error.message;return}const {data:profile}=await window.bmsDb.from('profiles').select('role').eq('id',data.user.id).single();if(!profile||!staffRoles.includes(profile.role)){await window.bmsDb.auth.signOut();authMessage.textContent='Ce compte n’est pas autorisé. Contactez le propriétaire.';return}closeAuth();showView('backoffice');toast('Connexion équipe réussie.');});
   const btn=document.querySelector('#checkoutBtn');
   const fresh=btn.cloneNode(true); btn.replaceWith(fresh);
-  fresh.addEventListener('click',()=>{if(!cart.length)return toast('Votre panier est vide.');document.querySelector('#checkoutForm').classList.remove('hidden');document.querySelector('#buyerName').focus()});
+  fresh.addEventListener('click',()=>{if(!cart.length)return toast(t('toast.cartEmpty'));document.querySelector('#checkoutForm').classList.remove('hidden');document.querySelector('#buyerName').focus()});
   document.querySelector('#checkoutForm').addEventListener('submit',async e=>{
-    e.preventDefault(); if(!cart.length)return toast('Votre panier est vide.');
-    if(!window.bmsDb)return toast('Mode démo : renseignez Supabase pour envoyer cette commande à votre base.');
+    e.preventDefault(); if(!cart.length)return toast(t('toast.cartEmpty'));
+    if(!window.bmsDb)return toast(t('toast.orderDemo'));
     const {data,error}=await window.bmsDb.rpc('place_guest_order',{p_name:buyerName.value,p_phone:buyerPhone.value,p_wilaya:buyerWilaya.value,p_address:buyerAddress.value,p_note:buyerNote.value,p_items:cart.map(x=>({product_id:x.id,quantity:x.qty}))});
     if(error)return toast('Commande non envoyée : '+error.message);
-    cart=[];saveCart();e.target.reset();e.target.classList.add('hidden');toast(`Commande ${data.order_number} reçue ! Nous vous contacterons bientôt.`);
+    cart=[];saveCart();e.target.reset();e.target.classList.add('hidden');toast(t('toast.orderPlaced',{n:data.order_number}));
   });
   async function connect(){
     if(!config.supabaseUrl||!publicKey||!window.supabase)return;
     window.bmsDb=window.supabase.createClient(config.supabaseUrl,publicKey);
     const {data,error}=await window.bmsDb.from('catalog_products').select('*').order('name_fr');
     if(error){console.warn('Supabase catalogue:',error.message);return}
-    if(data&&data.length){products.splice(0,products.length,...data.map(p=>({id:p.id,name:p.name_fr,age:p.age_group||'0-6',category:p.age_group?`${p.age_group} mois`:'Essentiels',price:Number(p.sale_price),cost:0,stock:p.stock_quantity,sku:p.sku,icon:'🧸',color:'#ffe7ef',badge:p.seasonal?'Saison':'Disponible'})));renderProducts();renderInventory();toast('Catalogue synchronisé avec Supabase.');}
+    if(data&&data.length){products.splice(0,products.length,...data.map(p=>({id:p.id,name:p.name_fr,name_ar:p.name_ar,name_en:p.name_en,age:p.age_group||'0-6',category:p.age_group?`${p.age_group} mois`:'Essentiels',price:Number(p.sale_price),cost:0,stock:p.stock_quantity,sku:p.sku,image_url:p.image_url,icon:p.image_url?`<img src="${p.image_url}" alt="${p.name_fr||''}">`:'🧸',color:'#ffe7ef',badge:p.seasonal?'Saison':'Disponible'})));renderProducts();renderInventory();}
   }
   connect();
 })();
