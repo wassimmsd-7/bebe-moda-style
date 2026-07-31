@@ -81,6 +81,18 @@ git push -u origin codex/nom-de-la-fonctionnalite
 
 Avant la version connectée, il faut fixer les données réelles : liste produits/variantes/prix, fournisseurs, tarifs par wilaya, transporteur, politiques retour, employés et méthode de confirmation COD. Le prototype présent est la base visuelle et fonctionnelle pour cette phase.
 
+## Corrections et ajouts (dernière révision)
+
+- **Menu mobile corrigé** : la navigation disparaissait complètement sous 900px sans aucun moyen de l'ouvrir. Un bouton ☰ ouvre désormais un panneau latéral responsive.
+- **Temps réel activé** : `realtime.js` s'abonne aux changements Supabase (`products`, `orders`). Le stock, le catalogue boutique, l'inventaire admin, la caisse et les commandes se mettent à jour automatiquement, sans rechargement. Nécessite d'exécuter `supabase/005_realtime.sql`.
+- **Doublon corrigé** : `inventory-admin.js` et `media-manager.js` chargeaient tous les deux la liste des produits sur le même clic d'onglet, ce qui pouvait écraser les photos/statuts de publication selon l'ordre des réponses réseau. `inventory-admin.js` ne gère plus que l'ouverture du formulaire d'ajout.
+- **Commandes connectées** : le panneau « Commandes » affichait une liste figée de 3 exemples. `orders-admin.js` charge désormais les vraies commandes en ligne depuis Supabase, avec changement de statut en direct.
+- **Clients connectés** : même correction pour le panneau « Clients » via `customers-admin.js` (nom, wilaya, nombre de commandes, total dépensé, calculés depuis la base réelle).
+
+## Panneaux encore en démonstration
+
+Les panneaux **Fournisseurs**, **Finance**, **Offres & saisons** et **Super admin** affichent toujours des exemples statiques : ils ne sont pas encore branchés à Supabase. Le schéma contient déjà les tables nécessaires (`suppliers`, `expenses`, `promotions`, `purchase_orders`), donc le travail restant est côté interface (mêmes patrons que `orders-admin.js`/`customers-admin.js`), pas côté base de données.
+
 ## Base de données et publication
 
 Le projet contient maintenant `supabase/schema.sql`, `supabase-config.js` et `DEPLOIEMENT_GRATUIT.md`. Suivez ce dernier document dans l’ordre : créer le projet Supabase, exécuter le schéma, renseigner l’URL et la clé `anon`, puis publier le dépôt via GitHub Pages. Avec cette configuration, le catalogue se lit depuis Supabase et les commandes COD sont envoyées à la base, avec contrôle du stock côté serveur.

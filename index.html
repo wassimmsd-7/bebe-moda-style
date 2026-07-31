@@ -18,13 +18,14 @@
   <div class="announcement">Livraison disponible partout en Algérie · Paiement à la livraison</div>
   <header class="site-header">
     <button class="logo" data-view="shop" aria-label="Accueil"><img src="assets/logo.png" alt="Bébé moda style" /><span>Bébé Moda Style</span></button>
-    <nav class="nav" aria-label="Navigation principale">
+    <nav class="nav" aria-label="Navigation principale" id="mainNav">
       <button class="nav-link active" data-view="shop">Boutique</button>
       <button class="nav-link" data-view="advice">Conseils parents</button>
       <button class="nav-link" data-view="tracking">Suivre ma commande</button>
     </nav>
-    <div class="header-actions"><button id="themeToggle" class="icon-btn" title="Mode sombre">◐</button><button id="languageToggle" class="lang-btn">FR</button><button class="cart-btn" data-view="cart">Panier <b id="cartCount">0</b></button></div>
+    <div class="header-actions"><button id="themeToggle" class="icon-btn" title="Mode sombre">◐</button><button id="languageToggle" class="lang-btn">FR</button><button class="cart-btn" data-view="cart">Panier <b id="cartCount">0</b></button><button id="menuToggle" class="icon-btn menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button></div>
   </header>
+  <div id="navOverlay" class="nav-overlay hidden"></div>
 
   <main>
     <section id="shop" class="view active">
@@ -102,6 +103,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
   <script src="production.js"></script>
+  <script src="orders-admin.js"></script>
+  <script src="customers-admin.js"></script>
+  <script src="realtime.js"></script>
   <script src="inventory-admin.js"></script>
   <script src="media-manager.js"></script>
   <script src="pos.js"></script>

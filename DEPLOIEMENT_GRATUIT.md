@@ -11,6 +11,7 @@ La combinaison conseillée est **GitHub Pages + Supabase** : sans carte bancaire
 5. Dans **SQL Editor**, exécutez la dernière commande commentée du schéma en remplaçant l’UUID par celui de votre compte. Cela active votre accès propriétaire.
 6. Pour remplir la boutique immédiatement, créez une nouvelle requête SQL, copiez `supabase/seed-demo.sql` entièrement puis cliquez `Run`. Les fournisseurs sont clairement marqués « à remplacer » : remplacez-les avec vos vrais contacts.
 7. Dans **Table Editor**, vérifiez `products`, puis modifiez les prix, le stock, les informations et activez `published = true` pour chaque produit réel. Un produit publié apparaît automatiquement sur la boutique.
+8. Exécutez ensuite, dans l'ordre, `supabase/002_product_images.sql`, `supabase/003_pos.sql`, `supabase/004_pos_returns.sql`, puis **`supabase/005_realtime.sql`**. Ce dernier fichier est nouveau : il active la synchronisation en temps réel (stock, commandes) utilisée par `realtime.js`. Sans lui, le site fonctionne mais les mises à jour n'apparaissent qu'après un rafraîchissement manuel.
 
 ### Importer beaucoup de produits
 
