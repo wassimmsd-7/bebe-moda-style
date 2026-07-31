@@ -17,6 +17,18 @@
     }
   }
 
+  /* Vérifie que la session gardée en local est bien encore ouverte en base
+     (par ex. si elle a été clôturée depuis un autre poste). Si elle ne l'est
+     plus, on efface la référence locale pour ne pas encaisser "à blanc". */
+  async function verifySession(){
+    if(!window.bmsDb||!sessionId)return;
+    const {data,error}=await window.bmsDb.from('cash_sessions').select('id,closed_at').eq('id',sessionId).single();
+    if(error||!data||data.closed_at){
+      sessionId=null; localStorage.removeItem('bms-pos-session'); renderSessionBar();
+      if(!error)toast('La caisse avait été clôturée ailleurs : réouvrez-la avant d’encaisser.');
+    }
+  }
+
   async function openSession(){
     if(!window.bmsDb)return toast('Connectez Supabase pour ouvrir la caisse.');
     const amount=Number(prompt('Montant en caisse au départ (DZD) ?','0')||0);
@@ -95,7 +107,7 @@
     const name=q('#posCustomerName').value.trim(); const phone=q('#posCustomerPhone').value.trim();
     const lines=posCart.map(x=>({name:posProducts.find(p=>p.id===x.id)?.name_fr||'',qty:x.qty,price:Number(posProducts.find(p=>p.id===x.id)?.sale_price||0)}));
     const items=posCart.map(x=>({product_id:x.id,quantity:x.qty}));
-    const {data,error}=await window.bmsDb.rpc('record_pos_sale',{p_items:items,p_method:method,p_received:received,p_customer_name:name||null,p_customer_phone:phone||null});
+    const {data,error}=await window.bmsDb.rpc('record_pos_sale',{p_items:items,p_method:method,p_received:received,p_session_id:sessionId,p_customer_name:name||null,p_customer_phone:phone||null});
     if(error)return toast('Vente refusée : '+error.message);
     posCart=[]; q('#posCustomerName').value=''; q('#posCustomerPhone').value=''; q('#posReceived').removeAttribute('data-touched'); q('#posReceived').value='';
     renderPosCart(); await loadPosProducts();
@@ -188,7 +200,7 @@
   q('#posReturnModal')?.addEventListener('click',e=>{if(e.target.id==='posReturnModal')q('#posReturnModal').classList.add('hidden')});
   q('#posReturnConfirm')?.addEventListener('click',confirmReturn);
 
-  document.querySelector('.admin-tab[data-panel="pos"]')?.addEventListener('click',()=>{renderSessionBar();loadPosProducts()});
+  document.querySelector('.admin-tab[data-panel="pos"]')?.addEventListener('click',async()=>{renderSessionBar();await verifySession();loadPosProducts()});
   window.bmsRefreshPos=()=>{
     if(document.querySelector('#pos')?.classList.contains('active')||document.querySelector('.admin-tab[data-panel="pos"]')?.classList.contains('active'))loadPosProducts();
     if(document.querySelector('.admin-tab[data-panel="posHistory"]')?.classList.contains('active'))loadPosHistory();
